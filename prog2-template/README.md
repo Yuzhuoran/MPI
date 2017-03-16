@@ -1,4 +1,4 @@
-CSE 6220 Programming Assignment 3
+CSE 6220 Programming Assignment 2
 =================================
 
 ## Code hosting
