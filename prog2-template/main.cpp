@@ -232,8 +232,8 @@ int main(int argc, char *argv[])
     // Timing only on master node (and barrierized)
     MPI_Barrier (MPI_COMM_WORLD);
     // start timer
-    struct timespec t_start, t_end;
-    clock_gettime(CLOCK_MONOTONIC,  &t_start);
+    double t_start, t_end;
+    t_start = MPI_Wtime();
 
     /*****************
      *  Run Sorting  *
@@ -243,9 +243,9 @@ int main(int argc, char *argv[])
 
     MPI_Barrier (MPI_COMM_WORLD);
     // get elapsed time in seconds
-    clock_gettime(CLOCK_MONOTONIC,  &t_end);
-    double time_secs = (t_end.tv_sec - t_start.tv_sec)
-        + (double) (t_end.tv_nsec - t_start.tv_nsec) * 1e-9;
+    t_end = MPI_Wtime();
+    double time_secs = (t_end - t_start);
+
     // output time
     if (rank == 0) {
         DEBUG("sorting took: " << time_secs << " s");

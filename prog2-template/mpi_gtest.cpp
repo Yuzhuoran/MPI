@@ -116,8 +116,6 @@ class MpiTestEventListener : public TestEventListener {
 }
 
 int main(int argc, char* argv[]) {
-    int result = 0;
-
     ::testing::InitGoogleTest(&argc, argv);
     MPI_Init(&argc, &argv);
 
@@ -136,11 +134,10 @@ int main(int argc, char* argv[]) {
     listeners.Append(new mpi_gtest::MpiTestEventListener(rank, default_listener));
 
     // running tests
-    result = RUN_ALL_TESTS();
+    int result = RUN_ALL_TESTS();
 
     // clean up MPI
     MPI_Finalize();
 
-    // return good status no matter what
-    return 0;
+    return result;
 }
