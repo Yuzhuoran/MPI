@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
    // start timer
    //   we omit the file loading and argument parsing from the runtime
    //   timings, we measure the time needed by the processor with rank 0
-   struct timespec t_start, t_end;
+   double t_start, t_end;
    if (p > 1)
    {
       // get the dimensions
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
       MPI_Bcast(&n, 1, MPI_INT, rank00, grid_comm);
 
       // start timer
-      clock_gettime(CLOCK_MONOTONIC,  &t_start);
+      t_start = MPI_Wtime();
 
       // allocate output and run the parallel jacobi implementation
       if (myrank == rank00)
@@ -156,10 +156,9 @@ int main(int argc, char *argv[])
       if (myrank == rank00)
       {
          // get time
-         clock_gettime(CLOCK_MONOTONIC,  &t_end);
+         t_end = MPI_Wtime();
          // time in seconds
-         double time_secs = (t_end.tv_sec - t_start.tv_sec)
-            + (double) (t_end.tv_nsec - t_start.tv_nsec) * 1e-9;
+         double time_secs = t_end - t_start;
          // output time
          std::cerr << time_secs << std::endl;
          // write output
@@ -189,15 +188,14 @@ int main(int argc, char *argv[])
          }
       }
 
-      clock_gettime(CLOCK_MONOTONIC,  &t_start);
+      t_start = MPI_Wtime();
       // sequential jacobi
       x = std::vector<double>(n);
       jacobi(n, &A[0], &b[0], &x[0]);
       // get time
-      clock_gettime(CLOCK_MONOTONIC,  &t_end);
+      t_end = MPI_Wtime();
       // time in seconds
-      double time_secs = (t_end.tv_sec - t_start.tv_sec)
-         + (double) (t_end.tv_nsec - t_start.tv_nsec) * 1e-9;
+      double time_secs = t_end - t_start;
       // output time
       std::cerr << time_secs << std::endl;
       // write output
